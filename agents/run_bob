@@ -9,6 +9,7 @@ docker run --rm -ti --name "aries-cloudagent-runner_bob" --network=von_von -p 80
  --seed 00000000000000000000000000Agent2 \
  --wallet-key welldone \
  --wallet-name myWallet \
+ --wallet-type indy \
  --genesis-url http://von_webserver_1:8000/genesis \
  --inbound-transport http 0.0.0.0 8002 \
  --outbound-transport http \

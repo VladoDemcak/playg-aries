@@ -4,6 +4,115 @@
 		"name": "aries-flow",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
-	"item": [],
+	"item": [
+		{
+			"name": "[Agent1] /wallet​/did - List wallet DIDs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/wallet/did?did=JdRkpwWwCBqjfcrsjAH1GT",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"wallet",
+						"did"
+					],
+					"query": [
+						{
+							"key": "did",
+							"value": "JdRkpwWwCBqjfcrsjAH1GT"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Registrator] /register - Authenticate Agent1 DID",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"did\":\"JdRkpwWwCBqjfcrsjAH1GT\",\n   \"seed\":null,\n   \"verkey\":\"AcFvnqBQUatQmU4kfc9R9XEci8HQfDRPutGFTwpdWUrZ\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Agent2] /ledger/did-verkey - Get the verkey for a DID from the ledger.",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8082/ledger/did-verkey?did=JdRkpwWwCBqjfcrsjAH1GT",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"ledger",
+						"did-verkey"
+					],
+					"query": [
+						{
+							"key": "did",
+							"value": "JdRkpwWwCBqjfcrsjAH1GT"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Agent1] /schemas - Create schema",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"attributes\":[\n      \"passportNumber\",\n      \"expirationDate\"\n   ],\n   \"schema_version\":\"1.0\",\n   \"schema_name\":\"passport\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/schemas",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"schemas"
+					]
+				}
+			},
+			"response": []
+		}
+	],
 	"protocolProfileBehavior": {}
 }
