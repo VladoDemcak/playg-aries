@@ -39,9 +39,9 @@ Want to see the scrolling container logs? Run "./manage logs"
 
 Open von_webserver_1 on http://localhost:8080/
 
-Run Alice's agent
+Run Faber's agent
 ```
-$ ./agents/run_alice 
+$ ./agents/run_faber 
 ```
 
 Expected result
@@ -78,13 +78,13 @@ Successfully tagged aries-cloudagent-run:latest
 
 Listening...
 ```
-Open Alice's OpenAPI on http://localhost:8081/api/doc
+Open Faber's OpenAPI on http://localhost:8081/api/doc
 
 
-Run Bob's agent:
+Run alice's agent:
 
 ```
-$ ./agents/run_bob
+$ ./agents/run_alice
 ```
 
 Expected result
@@ -121,4 +121,4 @@ Successfully tagged aries-cloudagent-run:latest
 
 Listening...
 ```
-Open Alice's OpenAPI on http://localhost:8082/api/doc
+Open Faber's OpenAPI on http://localhost:8082/api/doc

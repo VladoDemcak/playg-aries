@@ -5,7 +5,7 @@ cd  ../../aries-cloudagent-python/scripts
 
 docker build -t aries-cloudagent-run -f ../docker/Dockerfile.run .. || exit 1
 
-docker run --rm -ti --name "aries-cloudagent-runner_alice" --network=von_von -p 8081:8081 -p 8001:8001 aries-cloudagent-run start \
+docker run --rm -ti --name "aries-cloudagent-runner_faber" --network=von_von -p 8081:8081 -p 8001:8001 aries-cloudagent-run start \
  --seed 00000000000000000000000000Agent1 \
  --wallet-key welldone \
  --wallet-name myWallet \
