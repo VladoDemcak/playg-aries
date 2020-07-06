@@ -5,13 +5,13 @@ cd  ../../aries-cloudagent-python/scripts
 
 docker build -t aries-cloudagent-run -f ../docker/Dockerfile.run .. || exit 1
 
-docker run --rm -ti --name "aries-cloudagent-runner_alice" --network=von_von -p 8082:8082 -p 8002:8002 aries-cloudagent-run start \
- --seed 00000000000000000000000000Agent2 \
+docker run --rm -ti --name "aries-cloudagent-runner_faber" --network=von_von -p 8081:8081 -p 8001:8001 aries-cloudagent-run start \
+ --seed 00000000000000000000000000Agent1 \
  --wallet-key welldone \
  --wallet-name myWallet \
  --wallet-type indy \
  --genesis-url http://von_webserver_1:8000/genesis \
- --inbound-transport http 0.0.0.0 8002 \
+ --inbound-transport http 0.0.0.0 8001 \
  --outbound-transport http \
- --admin 0.0.0.0 8082 \
+ --admin 0.0.0.0 8081 \
  --admin-insecure-mode
