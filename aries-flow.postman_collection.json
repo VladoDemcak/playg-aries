@@ -32,13 +32,33 @@
 			"response": []
 		},
 		{
+			"name": "[Agent2] /wallet​/did - List wallet DIDs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8082/wallet/did",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"wallet",
+						"did"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "[Registrator] /register - Authenticate Agent1 DID",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n   \"did\":\"JdRkpwWwCBqjfcrsjAH1GT\",\n   \"seed\":null,\n   \"verkey\":\"AcFvnqBQUatQmU4kfc9R9XEci8HQfDRPutGFTwpdWUrZ\"\n}",
+					"raw": "{\n   \"did\":\"JdRkpwWwCBqjfcrsjAH1GT\",\n   \"verkey\":\"AcFvnqBQUatQmU4kfc9R9XEci8HQfDRPutGFTwpdWUrZ\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -108,6 +128,182 @@
 					"port": "8081",
 					"path": [
 						"schemas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Agent1] /connections/create-invitation - Create a new connection invitation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "64bc1bae-4f2f-4216-b606-cd31003382b8",
+						"exec": [
+							"let response = pm.response.json();",
+							"pm.environment.set(\"invitation\", JSON.stringify(response.invitation));",
+							"pm.environment.set(\"agent1.connection_id\", response.connection_id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/connections/create-invitation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"connections",
+						"create-invitation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Agent2] /connections/receive-invitation - /connections/receive-invitation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5fec558d-9b00-41aa-9d4e-21e59a85dc5d",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d6d590f6-be2e-4f24-9903-3ad557118e96",
+						"exec": [
+							"let response = pm.response.json();",
+							"pm.environment.set(\"agent2.connection_id\", response.connection_id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{invitation}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/connections/receive-invitation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"connections",
+						"receive-invitation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Agent2] /connections/{id}/accept-invitation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "559fa567-93e8-4bb0-b555-9cd9476d3dbe",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/connections/{{agent2.connection_id}}/accept-invitation?my_endpoint=http://172.19.0.8:8002",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"connections",
+						"{{agent2.connection_id}}",
+						"accept-invitation"
+					],
+					"query": [
+						{
+							"key": "my_endpoint",
+							"value": "http://172.19.0.8:8002"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Agent1] /connections/{id}/accept-request",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c9d04ba8-9756-4a7b-9349-74170a1b8c89",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/connections/{{agent1.connection_id}}/accept-request",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"connections",
+						"{{agent1.connection_id}}",
+						"accept-request"
 					]
 				}
 			},
