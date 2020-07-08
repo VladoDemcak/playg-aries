@@ -14,4 +14,7 @@ docker run --rm -ti --name "aries_cloudagent_runner_alice" --network=von_von -p 
  --inbound-transport http 0.0.0.0 8002 \
  --outbound-transport http \
  --admin 0.0.0.0 8082 \
- --admin-insecure-mode
+ --admin-insecure-mode \
+ --log-level DEBUG \
+ -l "Alice"
+# --auto-respond-credential-offer

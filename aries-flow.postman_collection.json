@@ -6,50 +6,505 @@
 	},
 	"item": [
 		{
-			"name": "[Agent1] /wallet​/did - List wallet DIDs",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8081/wallet/did?did=JdRkpwWwCBqjfcrsjAH1GT",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8081",
-					"path": [
-						"wallet",
-						"did"
-					],
-					"query": [
-						{
-							"key": "did",
-							"value": "JdRkpwWwCBqjfcrsjAH1GT"
+			"name": "schema",
+			"item": [
+				{
+					"name": "[Agent1] /schemas - Create schema",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"attributes\":[\n      \"passportNumber\",\n      \"expirationDate\"\n   ],\n   \"schema_version\":\"1.0\",\n   \"schema_name\":\"passport\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/schemas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"schemas"
+							]
 						}
-					]
+					},
+					"response": []
 				}
-			},
-			"response": []
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "[Agent2] /wallet​/did - List wallet DIDs",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8082/wallet/did",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8082",
-					"path": [
-						"wallet",
-						"did"
-					]
+			"name": "cred_def",
+			"item": [
+				{
+					"name": "[Agent1] /credential-definitions - Send a credDef to the ledger",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tag\": \"PassportCredDef05121999_a\",\n  \"schema_id\": \"JdRkpwWwCBqjfcrsjAH1GT:2:passport:1.0\",\n  \"support_revocation\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/credential-definitions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"credential-definitions"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "0160-connection-protocol",
+			"item": [
+				{
+					"name": "[Agent1] /connections/create-invitation - Create a new connection invitation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "64bc1bae-4f2f-4216-b606-cd31003382b8",
+								"exec": [
+									"let response = pm.response.json();",
+									"pm.environment.set(\"invitation\", JSON.stringify(response.invitation));",
+									"pm.environment.set(\"agent1.connection_id\", response.connection_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/connections/create-invitation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"connections",
+								"create-invitation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Agent2] /connections/receive-invitation - /connections/receive-invitation",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "5fec558d-9b00-41aa-9d4e-21e59a85dc5d",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "d6d590f6-be2e-4f24-9903-3ad557118e96",
+								"exec": [
+									"let response = pm.response.json();",
+									"pm.environment.set(\"agent2.connection_id\", response.connection_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{invitation}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/connections/receive-invitation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"connections",
+								"receive-invitation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Agent2] /connections/{id}/accept-invitation",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "559fa567-93e8-4bb0-b555-9cd9476d3dbe",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/connections/{{agent2.connection_id}}/accept-invitation?my_endpoint=http://172.19.0.8:8002",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"connections",
+								"{{agent2.connection_id}}",
+								"accept-invitation"
+							],
+							"query": [
+								{
+									"key": "my_endpoint",
+									"value": "http://172.19.0.8:8002"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Agent1] /connections/{id}/accept-request",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c9d04ba8-9756-4a7b-9349-74170a1b8c89",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/connections/{{agent1.connection_id}}/accept-request",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"connections",
+								"{{agent1.connection_id}}",
+								"accept-request"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "0036-issue-credential",
+			"item": [
+				{
+					"name": "[Agent1] /issue-credential/send",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a7d85801-1b94-402b-9bfe-9a8cc7c8c781",
+								"exec": [
+									"// \"credential_exchange_id\": \"9503e3ea-3b82-4b0a-80df-bb7bb841e4ad\","
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"issuer_did\": \"JdRkpwWwCBqjfcrsjAH1GT\",\n  \"schema_version\": \"1.0\",\n  \"credential_proposal\": {\n    \"@type\": \"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/credential-preview\",\n    \"attributes\": [\n      {\n        \"name\": \"passportNumber\",\n        \"value\": \"123454321\"\n      },\n      {\n        \"name\": \"expirationDate\",\n        \"value\": \"2020-01-01\"\n      }\n    ]\n  },\n  \"comment\": \"This is my sample comment.\",\n  \"cred_def_id\": \"JdRkpwWwCBqjfcrsjAH1GT:3:CL:8:PassportCredDef05121999_a\",\n  \"schema_issuer_did\": \"JdRkpwWwCBqjfcrsjAH1GT\",\n  \"schema_name\": \"passport\",\n  \"schema_id\": \"JdRkpwWwCBqjfcrsjAH1GT:2:passport:1.0\",\n  \"connection_id\": \"{{agent1.connection_id}}\",\n  \"auto_remove\": false,\n  \"trace\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/issue-credential/send",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"issue-credential",
+								"send"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Agent2] /issue-credential/records - get cred_ex_id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "63983f26-7605-4c45-adde-d607832ed7a8",
+								"exec": [
+									"const response = pm.response.json();",
+									"const agent2ConnectionId = pm.environment.get(\"agent2.connection_id\");",
+									"",
+									"const record = response.results.find(result => result.connection_id === agent2ConnectionId);",
+									"pm.environment.set(\"agent2.credential_exchange_id\", record.credential_exchange_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8082/issue-credential/records",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"issue-credential",
+								"records"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Agent2] /issue-credential/records/{cred_ex_id}/send-request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c8fdb665-e363-43aa-bd7d-20209f0476ec",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/issue-credential/records/{{agent2.credential_exchange_id}}/send-request",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"issue-credential",
+								"records",
+								"{{agent2.credential_exchange_id}}",
+								"send-request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Agent2] /issue-credential/records/{cred_ex_id}/store",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "85d750fe-f621-4f14-b05b-4d1109c9c0db",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/issue-credential/records/{{agent2.credential_exchange_id}}/store",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"issue-credential",
+								"records",
+								"{{agent2.credential_exchange_id}}",
+								"store"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Agent1] /issue-credential/revoke - Revoke an issued credential",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8082/issue-credential/revoke?rev_reg_id=EqfMJ89133WpHQywYznDZT%3A4%3AEqfMJ89133WpHQywYznDZT%3A3%3ACL%3A26%3APassportCredDef05121999_a%3ACL_ACCUM%3APassportCredDef05121999_a_0&cred_rev_id=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"issue-credential",
+								"revoke"
+							],
+							"query": [
+								{
+									"key": "rev_reg_id",
+									"value": "EqfMJ89133WpHQywYznDZT%3A4%3AEqfMJ89133WpHQywYznDZT%3A3%3ACL%3A26%3APassportCredDef05121999_a%3ACL_ACCUM%3APassportCredDef05121999_a_0"
+								},
+								{
+									"key": "cred_rev_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "DID",
+			"item": [
+				{
+					"name": "[Agent1] /wallet​/did - List wallet DIDs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/wallet/did?did=JdRkpwWwCBqjfcrsjAH1GT",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"wallet",
+								"did"
+							],
+							"query": [
+								{
+									"key": "did",
+									"value": "JdRkpwWwCBqjfcrsjAH1GT"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Agent2] /wallet​/did - List wallet DIDs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8082/wallet/did",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"wallet",
+								"did"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "[Registrator] /register - Authenticate Agent1 DID",
@@ -74,236 +529,6 @@
 					"port": "8080",
 					"path": [
 						"register"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "[Agent2] /ledger/did-verkey - Get the verkey for a DID from the ledger.",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8082/ledger/did-verkey?did=JdRkpwWwCBqjfcrsjAH1GT",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8082",
-					"path": [
-						"ledger",
-						"did-verkey"
-					],
-					"query": [
-						{
-							"key": "did",
-							"value": "JdRkpwWwCBqjfcrsjAH1GT"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "[Agent1] /schemas - Create schema",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n   \"attributes\":[\n      \"passportNumber\",\n      \"expirationDate\"\n   ],\n   \"schema_version\":\"1.0\",\n   \"schema_name\":\"passport\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8081/schemas",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8081",
-					"path": [
-						"schemas"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "[Agent1] /connections/create-invitation - Create a new connection invitation",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "64bc1bae-4f2f-4216-b606-cd31003382b8",
-						"exec": [
-							"let response = pm.response.json();",
-							"pm.environment.set(\"invitation\", JSON.stringify(response.invitation));",
-							"pm.environment.set(\"agent1.connection_id\", response.connection_id);"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8081/connections/create-invitation",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8081",
-					"path": [
-						"connections",
-						"create-invitation"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "[Agent2] /connections/receive-invitation - /connections/receive-invitation",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "5fec558d-9b00-41aa-9d4e-21e59a85dc5d",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "d6d590f6-be2e-4f24-9903-3ad557118e96",
-						"exec": [
-							"let response = pm.response.json();",
-							"pm.environment.set(\"agent2.connection_id\", response.connection_id);"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{{invitation}}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8082/connections/receive-invitation",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8082",
-					"path": [
-						"connections",
-						"receive-invitation"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "[Agent2] /connections/{id}/accept-invitation",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "559fa567-93e8-4bb0-b555-9cd9476d3dbe",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8082/connections/{{agent2.connection_id}}/accept-invitation?my_endpoint=http://172.19.0.8:8002",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8082",
-					"path": [
-						"connections",
-						"{{agent2.connection_id}}",
-						"accept-invitation"
-					],
-					"query": [
-						{
-							"key": "my_endpoint",
-							"value": "http://172.19.0.8:8002"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "[Agent1] /connections/{id}/accept-request",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "c9d04ba8-9756-4a7b-9349-74170a1b8c89",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8081/connections/{{agent1.connection_id}}/accept-request",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8081",
-					"path": [
-						"connections",
-						"{{agent1.connection_id}}",
-						"accept-request"
 					]
 				}
 			},
