@@ -18,3 +18,4 @@ docker run --rm -ti --name "aries_cloudagent_runner_alice" --network=von_von -p 
  --log-level DEBUG \
  -l "Alice"
 # --auto-respond-credential-offer
+# --auto-respond-presentation-request

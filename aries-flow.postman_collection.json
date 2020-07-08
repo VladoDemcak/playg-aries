@@ -422,17 +422,17 @@
 					"response": []
 				},
 				{
-					"name": "[Agent1] /issue-credential/revoke - Revoke an issued credential",
+					"name": "In progress .... [Agent1] /issue-credential/revoke - Revoke an issued credential",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8082/issue-credential/revoke?rev_reg_id=EqfMJ89133WpHQywYznDZT%3A4%3AEqfMJ89133WpHQywYznDZT%3A3%3ACL%3A26%3APassportCredDef05121999_a%3ACL_ACCUM%3APassportCredDef05121999_a_0&cred_rev_id=1",
+							"raw": "http://localhost:8081/issue-credential/revoke?rev_reg_id=EqfMJ89133WpHQywYznDZT%3A4%3AEqfMJ89133WpHQywYznDZT%3A3%3ACL%3A26%3APassportCredDef05121999_a%3ACL_ACCUM%3APassportCredDef05121999_a_0&cred_rev_id=1",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8082",
+							"port": "8081",
 							"path": [
 								"issue-credential",
 								"revoke"
@@ -446,6 +446,169 @@
 									"key": "cred_rev_id",
 									"value": "1"
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "0037-present-proof",
+			"item": [
+				{
+					"name": "[Agent1] /present-proof/send-request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "04f58cce-c9e2-4869-9b30-88ade54e92f3",
+								"exec": [
+									"const response = pm.response.json();",
+									"pm.environment.set(\"agent1.presentation_exchange_id\", response.presentation_exchange_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"connection_id\": \"{{agent1.connection_id}}\",\n  \"comment\": \"This is a comment about the reason for the proof\",\n  \"proof_request\": {\n    \"name\": \"Proof of Passport\",\n    \"version\": \"1.0\",\n    \"requested_attributes\": {\n      \"0_name_uuid\": {\n        \"name\": \"passportNumber\",\n        \"restrictions\": [\n          {\n            \"cred_def_id\": \"JdRkpwWwCBqjfcrsjAH1GT:3:CL:8:PassportCredDef05121999_a\"\n          }\n        ]\n      },\n      \"0_date_uuid\": {\n        \"name\": \"expirationDate\",\n        \"restrictions\": [\n          {\n            \"cred_def_id\": \"JdRkpwWwCBqjfcrsjAH1GT:3:CL:8:PassportCredDef05121999_a\"\n          }\n        ]\n      }\n    },\n    \"requested_predicates\": {}\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/present-proof/send-request",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"present-proof",
+								"send-request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Agent2] /present-proof/records",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d64b1949-ccba-4b46-9bc1-2dae86d3ffff",
+								"exec": [
+									"const response = pm.response.json();",
+									"const agent2ConnectionId = pm.environment.get(\"agent2.connection_id\");",
+									"",
+									"const record = response.results.sort((a, b) => b.created_at.localeCompare(a.created_at)).find(result => result.connection_id === agent2ConnectionId);",
+									"console.log(record.presentation_exchange_id)",
+									"pm.environment.set(\"agent2.presentation_exchange_id\", record.presentation_exchange_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8082/present-proof/records",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"present-proof",
+								"records"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Agent2] /present-proof/records/{pres_ex_id}/send-presentation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "06abcc72-977e-4300-9cc2-27c5043170ce",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"requested_attributes\": {\n    \"0_name_uuid\": {\n      \"cred_id\": \"b70321b4-ea29-4077-b011-3f42b1504c32\",\n      \"revealed\": true\n    },\n    \"0_date_uuid\": {\n      \"cred_id\": \"b70321b4-ea29-4077-b011-3f42b1504c32\",\n      \"revealed\": true\n    }\n  },\n  \"requested_predicates\": {},\n  \"self_attested_attributes\": {},\n  \"trace\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/present-proof/records/{{agent2.presentation_exchange_id}}/send-presentation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"present-proof",
+								"records",
+								"{{agent2.presentation_exchange_id}}",
+								"send-presentation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Agent1] /present-proof/records/{pres_ex_id}/verify-presentation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c7f21c06-c662-408f-a0b4-a6abd784fd00",
+								"exec": [
+									"const response = pm.response.json();",
+									"pm.environment.set(\"agent1.presentation_exchange_id\", response.presentation_exchange_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/present-proof/records/{{agent1.presentation_exchange_id}}/verify-presentation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"present-proof",
+								"records",
+								"{{agent1.presentation_exchange_id}}",
+								"verify-presentation"
 							]
 						}
 					},
