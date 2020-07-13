@@ -1,0 +1,994 @@
+{
+	"info": {
+		"_postman_id": "c6f8a408-21dd-45ad-a338-aab22894dd0e",
+		"name": "aries-flow-go",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "setup-helpers",
+			"item": [
+				{
+					"name": "[Registrator] /register - Authenticate Agent1 DID",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"did\":\"JdRkpwWwCBqjfcrsjAH1GT\",\n   \"verkey\":\"AcFvnqBQUatQmU4kfc9R9XEci8HQfDRPutGFTwpdWUrZ\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "schema",
+			"item": [
+				{
+					"name": "[Issuer] /schemas - Create schema",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"attributes\":[\n      \"passportNumber\",\n      \"expirationDate\"\n   ],\n   \"schema_version\":\"1.0\",\n   \"schema_name\":\"passport\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{issuer.baseUrl}}/schemas",
+							"host": [
+								"{{issuer.baseUrl}}"
+							],
+							"path": [
+								"schemas"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "cred_def",
+			"item": [
+				{
+					"name": "[Issuer] /credential-definitions - Send a credDef to the ledger",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tag\": \"PassportCredDef05121999_a\",\n  \"schema_id\": \"JdRkpwWwCBqjfcrsjAH1GT:2:passport:1.0\",\n  \"support_revocation\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{issuer.baseUrl}}/credential-definitions",
+							"host": [
+								"{{issuer.baseUrl}}"
+							],
+							"path": [
+								"credential-definitions"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "0011-cred-revocation",
+			"item": [
+				{
+					"name": "[Issuer] /revocation/create-registry",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6af66e2e-6668-4fd7-a5df-fb6027057c6a",
+								"exec": [
+									"let response = pm.response.json();",
+									"pm.environment.set(\"agent1.revoc_reg_id\", response.result.revoc_reg_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"max_cred_num\": 100,\n  \"credential_definition_id\": \"JdRkpwWwCBqjfcrsjAH1GT:3:CL:8:PassportCredDef05121999_a\",\n  \"issuance_by_default\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{issuer.baseUrl}}/revocation/create-registry",
+							"host": [
+								"{{issuer.baseUrl}}"
+							],
+							"path": [
+								"revocation",
+								"create-registry"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Issuer] /revocation/registry/{rev_reg_id}",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tails_public_uri\": \"http://172.19.0.7:8081/revocation/registry/{{agent1.revoc_reg_id}}/tails-file\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{issuer.baseUrl}}/revocation/registry/{{agent1.revoc_reg_id}}",
+							"host": [
+								"{{issuer.baseUrl}}"
+							],
+							"path": [
+								"revocation",
+								"registry",
+								"{{agent1.revoc_reg_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Issuer] /revocation/registry/{rev_reg_id}/publish",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"max_cred_num\": 100,\n  \"credential_definition_id\": \"WgWxqztrNooG92RXvxSTWv:3:CL:20:tag\",\n  \"issuance_by_default\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{issuer.baseUrl}}/revocation/registry/{{agent1.revoc_reg_id}}/publish",
+							"host": [
+								"{{issuer.baseUrl}}"
+							],
+							"path": [
+								"revocation",
+								"registry",
+								"{{agent1.revoc_reg_id}}",
+								"publish"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "0160-connection-protocol",
+			"item": [
+				{
+					"name": "**[Issuer] /connections/create-invitation - Create a new connection invitation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b1850326-1070-47ef-a132-70672a5408e5",
+								"exec": [
+									"let response = pm.response.json();",
+									"pm.environment.set(\"invitation\", JSON.stringify(response.invitation));",
+									"pm.environment.set(\"agent1.connection_id\", response['@id']);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{issuer.baseUrl}}/connections/create-invitation",
+							"host": [
+								"{{issuer.baseUrl}}"
+							],
+							"path": [
+								"connections",
+								"create-invitation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Prover] /connections/receive-invitation - /connections/receive-invitation",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "079077a3-388b-4695-aa4b-ffc4fd1f5751",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5026db2b-1ace-4232-8128-d7e77455852b",
+								"exec": [
+									"let response = pm.response.json();",
+									"pm.environment.set(\"agent2.connection_id\", response.connection_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{invitation}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{prover.baseUrl}}/connections/receive-invitation",
+							"host": [
+								"{{prover.baseUrl}}"
+							],
+							"path": [
+								"connections",
+								"receive-invitation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Prover] /connections/{id}/accept-invitation",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "3ffec6ff-2c89-4e86-b60a-6cf24bb07804",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{prover.baseUrl}}/connections/{{agent2.connection_id}}/accept-invitation?my_endpoint=http://172.19.0.8:8002",
+							"host": [
+								"{{prover.baseUrl}}"
+							],
+							"path": [
+								"connections",
+								"{{agent2.connection_id}}",
+								"accept-invitation"
+							],
+							"query": [
+								{
+									"key": "my_endpoint",
+									"value": "http://172.19.0.8:8002"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "**[Issuer] /connections/create-invitation - Create a new connection invitation Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2d20982c-d40f-4854-84ce-4a70ce0722aa",
+								"exec": [
+									"// this is different with ACA-py. ConnectionId is not known in /connections/create-invitation response",
+									"// it needs to be resolved after /accept-invitation from receiver",
+									"// and it has to be taken from relationship ThreadID -> ConnectionId",
+									"const response = pm.response.json();",
+									"const agent1ConnectionId = pm.environment.get(\"agent1.connection_id\");",
+									"console.log(agent1ConnectionId)",
+									"const record = response.results.find(result => result.ThreadID === agent1ConnectionId);",
+									"console.log(response.results)",
+									"pm.environment.set(\"agent1.connection_id\", record.ConnectionID);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{issuer.baseUrl}}/connections",
+							"host": [
+								"{{issuer.baseUrl}}"
+							],
+							"path": [
+								"connections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Issuer] /connections/{id}/accept-request",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a5e2f5d1-4daa-4b46-97ea-7a0645e52200",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{issuer.baseUrl}}/connections/{{agent1.connection_id}}/accept-request",
+							"host": [
+								"{{issuer.baseUrl}}"
+							],
+							"path": [
+								"connections",
+								"{{agent1.connection_id}}",
+								"accept-request"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "0036-issue-credential",
+			"item": [
+				{
+					"name": "[Issuer] /issue-credential/send-offer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d46cc92e-9889-4e6c-a661-6d2b7d02a356",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"comment\": \"Sample comment here!\",\n  \"trace\": false,\n  \"credential_preview\": {\n    \"@type\": \"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/credential-preview\",\n    \"attributes\": [\n      {\n        \"name\": \"passportNumber\",\n        \"value\": \"123454321\"\n      },\n      {\n        \"name\": \"expirationDate\",\n        \"value\": \"2020-01-01\"\n      }\n    ]\n  },\n  \"auto_issue\": false,\n  \"cred_def_id\": \"JdRkpwWwCBqjfcrsjAH1GT:3:CL:8:PassportCredDef05121999_a\",\n  \"connection_id\": \"{{agent1.connection_id}}\",\n  \"auto_remove\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{issuer.baseUrl}}/issue-credential/send-offer",
+							"host": [
+								"{{issuer.baseUrl}}"
+							],
+							"path": [
+								"issue-credential",
+								"send-offer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Issuer] /issue-credential/records - get cred_ex_id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "58d89ca5-5902-4a21-b13a-971c36f7636f",
+								"exec": [
+									"const response = pm.response.json();",
+									"const agent2ConnectionId = pm.environment.get(\"agent1.connection_id\");",
+									"",
+									"const record = response.results.sort((a, b) => b.created_at.localeCompare(a.created_at)).find(result => result.connection_id === agent2ConnectionId);",
+									"pm.environment.set(\"agent1.credential_exchange_id\", record.credential_exchange_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{issuer.baseUrl}}/issue-credential/records",
+							"host": [
+								"{{issuer.baseUrl}}"
+							],
+							"path": [
+								"issue-credential",
+								"records"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Prover] /issue-credential/records - get cred_ex_id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0a70a7e0-725e-4504-948d-466136e9cc75",
+								"exec": [
+									"const response = pm.response.json();",
+									"const agent2ConnectionId = pm.environment.get(\"agent2.connection_id\");",
+									"",
+									"const record = response.results.sort((a, b) => b.created_at.localeCompare(a.created_at)).find(result => result.connection_id === agent2ConnectionId);",
+									"pm.environment.set(\"agent2.credential_exchange_id\", record.credential_exchange_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{prover.baseUrl}}/issue-credential/records",
+							"host": [
+								"{{prover.baseUrl}}"
+							],
+							"path": [
+								"issue-credential",
+								"records"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Prover] /issue-credential/records/{cred_ex_id}/send-request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "49685d0f-2cc9-4524-8695-87ce38579d9e",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{prover.baseUrl}}/issue-credential/records/{{agent2.credential_exchange_id}}/send-request",
+							"host": [
+								"{{prover.baseUrl}}"
+							],
+							"path": [
+								"issue-credential",
+								"records",
+								"{{agent2.credential_exchange_id}}",
+								"send-request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Issuer] /issue-credential/records/{cred_ex_id}/issue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1978d2ad-2da6-430a-9f0c-c7c5405e21ee",
+								"exec": [
+									"// \"credential_exchange_id\": \"9503e3ea-3b82-4b0a-80df-bb7bb841e4ad\","
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"comment\": \"Some comment\",\n  \"credential_preview\": {\n    \"@type\": \"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/credential-preview\",\n    \"attributes\": [\n      {\n        \"name\": \"passportNumber\",\n        \"value\": \"123454321\"\n      },\n      {\n        \"name\": \"expirationDate\",\n        \"value\": \"2020-01-01\"\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{issuer.baseUrl}}/issue-credential/records/{{agent1.credential_exchange_id}}/issue",
+							"host": [
+								"{{issuer.baseUrl}}"
+							],
+							"path": [
+								"issue-credential",
+								"records",
+								"{{agent1.credential_exchange_id}}",
+								"issue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Prover] /issue-credential/records/{cred_ex_id}/store",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9350ada4-7849-4278-90a1-1ac4dbc01a6e",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{prover.baseUrl}}/issue-credential/records/{{agent2.credential_exchange_id}}/store",
+							"host": [
+								"{{prover.baseUrl}}"
+							],
+							"path": [
+								"issue-credential",
+								"records",
+								"{{agent2.credential_exchange_id}}",
+								"store"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Issuer] /issue-credential/revoke",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{issuer.baseUrl}}/issue-credential/revoke?rev_reg_id={{agent1.revoc_reg_id}}&publish=true&cred_rev_id=1",
+							"host": [
+								"{{issuer.baseUrl}}"
+							],
+							"path": [
+								"issue-credential",
+								"revoke"
+							],
+							"query": [
+								{
+									"key": "rev_reg_id",
+									"value": "{{agent1.revoc_reg_id}}"
+								},
+								{
+									"key": "publish",
+									"value": "true"
+								},
+								{
+									"key": "cred_rev_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "0037-present-proof",
+			"item": [
+				{
+					"name": "[Issuer] /present-proof/send-request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9d87915a-97f0-4fb0-abfe-5e87f8024d0b",
+								"exec": [
+									"const response = pm.response.json();",
+									"pm.environment.set(\"agent1.presentation_exchange_id\", response.presentation_exchange_id);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "8704ac2a-fa74-402d-88d4-51a80dc53070",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"connection_id\": \"{{agent1.connection_id}}\",\n  \"comment\": \"This is a comment about the reason for the proof\",\n  \"proof_request\": {\n    \"name\": \"Proof of Passport\",\n    \"version\": \"1.0\",\n    \"requested_attributes\": {\n      \"0_name_uuid\": {\n        \"name\": \"passportNumber\",\n        \"restrictions\": [\n          {\n            \"cred_def_id\": \"JdRkpwWwCBqjfcrsjAH1GT:3:CL:8:PassportCredDef05121999_a\"\n          }\n        ],\n      },\n      \"0_date_uuid\": {\n        \"name\": \"expirationDate\",\n        \"restrictions\": [\n          {\n            \"cred_def_id\": \"JdRkpwWwCBqjfcrsjAH1GT:3:CL:8:PassportCredDef05121999_a\"\n          }\n        ],\n      }\n    },\n    \"requested_predicates\": {}\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{issuer.baseUrl}}/present-proof/send-request",
+							"host": [
+								"{{issuer.baseUrl}}"
+							],
+							"path": [
+								"present-proof",
+								"send-request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Prover] /present-proof/records",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "94fb60cd-302e-40c7-b841-82de318c96f1",
+								"exec": [
+									"const response = pm.response.json();",
+									"const agent2ConnectionId = pm.environment.get(\"agent2.connection_id\");",
+									"",
+									"const record = response.results.sort((a, b) => b.created_at.localeCompare(a.created_at)).find(result => result.connection_id === agent2ConnectionId);",
+									"console.log(record.presentation_exchange_id)",
+									"pm.environment.set(\"agent2.presentation_exchange_id\", record.presentation_exchange_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{prover.baseUrl}}/present-proof/records",
+							"host": [
+								"{{prover.baseUrl}}"
+							],
+							"path": [
+								"present-proof",
+								"records"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Prover] /credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bf39ef35-b2a4-4ef3-b903-f3cf99d5e52e",
+								"exec": [
+									"const response = pm.response.json();",
+									"// const agent2ConnectionId = pm.environment.get(\"agent2.connection_id\");",
+									"",
+									"const record = response.results.find(result => result.cred_def_id === 'JdRkpwWwCBqjfcrsjAH1GT:3:CL:8:PassportCredDef05121999_a');",
+									"pm.environment.set(\"agent2.cred_id\", record.referent);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{prover.baseUrl}}/credentials",
+							"host": [
+								"{{prover.baseUrl}}"
+							],
+							"path": [
+								"credentials"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Prover] /present-proof/records/{pres_ex_id}/send-presentation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "589aa8a6-94ca-4609-8092-699b5482c294",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"requested_attributes\": {\n    \"0_name_uuid\": {\n      \"cred_id\": \"{{agent2.cred_id}}\",\n      \"revealed\": true\n    },\n    \"0_date_uuid\": {\n      \"cred_id\": \"{{agent2.cred_id}}\",\n      \"revealed\": true\n    }\n  },\n  \"requested_predicates\": {},\n  \"self_attested_attributes\": {},\n  \"trace\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{prover.baseUrl}}/present-proof/records/{{agent2.presentation_exchange_id}}/send-presentation",
+							"host": [
+								"{{prover.baseUrl}}"
+							],
+							"path": [
+								"present-proof",
+								"records",
+								"{{agent2.presentation_exchange_id}}",
+								"send-presentation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Issuer] /present-proof/records/{pres_ex_id}/verify-presentation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c50c872a-3f58-401b-ab82-4f2cebc5ed77",
+								"exec": [
+									"const response = pm.response.json();",
+									"console.log(\"verified:\"+ response.verified)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{issuer.baseUrl}}/present-proof/records/{{agent1.presentation_exchange_id}}/verify-presentation",
+							"host": [
+								"{{issuer.baseUrl}}"
+							],
+							"path": [
+								"present-proof",
+								"records",
+								"{{agent1.presentation_exchange_id}}",
+								"verify-presentation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Issuer] /present-proof/records/{pres_ex_id}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "57fefd7e-bf09-4350-aff5-cd25ec02fb24",
+								"exec": [
+									"const response = pm.response.json();",
+									"console.log(\"verified:\"+ response.verified)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{issuer.baseUrl}}/present-proof/records/{{agent1.presentation_exchange_id}}",
+							"host": [
+								"{{issuer.baseUrl}}"
+							],
+							"path": [
+								"present-proof",
+								"records",
+								"{{agent1.presentation_exchange_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "DID",
+			"item": [
+				{
+					"name": "[Agent1] /wallet​/did - List wallet DIDs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/wallet/did?did=JdRkpwWwCBqjfcrsjAH1GT",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"wallet",
+								"did"
+							],
+							"query": [
+								{
+									"key": "did",
+									"value": "JdRkpwWwCBqjfcrsjAH1GT"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Agent2] /wallet​/did - List wallet DIDs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8082/wallet/did",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"wallet",
+								"did"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "babf15ac-8639-4746-aeef-6b790939fc3a",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "04b63c04-f532-4806-b7ed-8ef4fc517735",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
