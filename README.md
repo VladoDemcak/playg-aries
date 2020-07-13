@@ -26,7 +26,7 @@ Change directory to playground with aries.
 $ cd playg-aries/
 ```
 
-Run indy network
+1. Run indy network
 ```
 $ ./ledger/run_von 
 Creating von_node4_1     ... done
@@ -39,86 +39,25 @@ Want to see the scrolling container logs? Run "./manage logs"
 
 Open von_webserver_1 on http://localhost:8080/
 
-Run Faber's agent
+2. Register Faber's DID on ledger
+```
+curl --location --request POST 'http://localhost:8080/register' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+   "did":"JdRkpwWwCBqjfcrsjAH1GT",
+   "verkey":"AcFvnqBQUatQmU4kfc9R9XEci8HQfDRPutGFTwpdWUrZ"
+}'
+```
+
+3. Run Faber's agent
 ```
 $ ./agents/run_faber 
 ```
 
-Expected result
-```
-Sending build context to Docker daemon  17.37MB
-Step 1/11 : FROM bcgovimages/von-image:py36-1.15-0
-...
-...
-Successfully tagged aries-cloudagent-run:latest
-
-::::::::::::::::::::::::::::::::::::::::::::::
-:: Aries Cloud Agent                        ::
-::                                          ::
-::                                          ::
-:: Inbound Transports:                      ::
-::                                          ::
-::   - http://0.0.0.0:8001                  ::
-::                                          ::
-:: Outbound Transports:                     ::
-::                                          ::
-::   - http                                 ::
-::   - https                                ::
-::                                          ::
-:: Public DID Information:                  ::
-::                                          ::
-::   - DID: JdRkpwWwCBqjfcrsjAH1GT          ::
-::                                          ::
-:: Administration API:                      ::
-::                                          ::
-::   - http://0.0.0.0:8081                  ::
-::                                          ::
-::                               ver: 0.5.2 ::
-::::::::::::::::::::::::::::::::::::::::::::::
-
-Listening...
-```
-Open Faber's OpenAPI on http://localhost:8081/api/doc
-
-
-Run alice's agent:
+4. Run Alice's agent
 
 ```
 $ ./agents/run_alice
 ```
 
-Expected result
-```
-Sending build context to Docker daemon  17.37MB
-Step 1/11 : FROM bcgovimages/von-image:py36-1.15-0
-...
-...
-Successfully tagged aries-cloudagent-run:latest
-
-::::::::::::::::::::::::::::::::::::::::::::::
-:: Aries Cloud Agent                        ::
-::                                          ::
-::                                          ::
-:: Inbound Transports:                      ::
-::                                          ::
-::   - http://0.0.0.0:8002                  ::
-::                                          ::
-:: Outbound Transports:                     ::
-::                                          ::
-::   - http                                 ::
-::   - https                                ::
-::                                          ::
-:: Public DID Information:                  ::
-::                                          ::
-::   - DID: 68qfyRnCfcQnw2NP5rLSWi          ::
-::                                          ::
-:: Administration API:                      ::
-::                                          ::
-::   - http://0.0.0.0:8082                  ::
-::                                          ::
-::                               ver: 0.5.2 ::
-::::::::::::::::::::::::::::::::::::::::::::::
-
-Listening...
-```
-Open Faber's OpenAPI on http://localhost:8082/api/doc
+5. Import Postman
