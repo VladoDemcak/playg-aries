@@ -21,23 +21,11 @@ git clone https://github.com/VladoDemcak/playg-aries.git
 
 
 ## Run
-Change directory to playground with aries.
-```
-$ cd playg-aries/
-```
+0. Change directory to playground with aries. `$ cd playg-aries/`
 
 1. Run indy network
-```
-$ ./ledger/run_von 
-Creating von_node4_1     ... done
-Creating von_webserver_1 ... done
-Creating von_node1_1     ... done
-Creating von_node3_1     ... done
-Creating von_node2_1     ... done
-Want to see the scrolling container logs? Run "./manage logs"
-```
+` $ ./ledger/run_von `
 
-Open von_webserver_1 on http://localhost:8080/
 
 2. Register Faber's DID on ledger
 ```
@@ -49,15 +37,8 @@ curl --location --request POST 'http://localhost:8080/register' \
 }'
 ```
 
-3. Run Faber's agent
-```
-$ ./agents/run_faber 
-```
+3. Run Faber's agent `$ ./agents/run_faber`
 
-4. Run Alice's agent
-
-```
-$ ./agents/run_alice
-```
+4. Run Alice's agent `$ ./agents/run_alice`
 
 5. Import Postman
