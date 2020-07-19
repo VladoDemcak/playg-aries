@@ -15,7 +15,7 @@ docker run --rm -ti --name "aries_cloudagent_runner_faber" --network=von_von -p 
  --outbound-transport http \
  --admin 0.0.0.0 8081 \
  --admin-insecure-mode \
- --endpoint http://172.19.0.7:8001 \
+ --endpoint http://172.26.0.7:8001 \
  --log-level DEBUG \
  --invite-label "Faber invitation" \
  --trace-label "Faber trace" \
