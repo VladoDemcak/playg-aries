@@ -1,11 +1,11 @@
 import express, { Express } from 'express';
 import cors from 'cors';
-import logger from './node_modules/aries-framework-javascript/build/lib/logger';
+import logger from 'aries-framework-javascript/build/lib/logger';
 import bodyParser from 'body-parser';
 import { Agent, InboundTransporter, OutboundTransporter, encodeInvitationToUrl } from 'aries-framework-javascript';
-import { OutboundPackage } from './node_modules/aries-framework-javascript/build/lib/types';
-import { MessageRepository } from './node_modules/aries-framework-javascript/build/lib/storage/MessageRepository';
-import { InMemoryMessageRepository } from './node_modules/aries-framework-javascript/build/lib/storage/InMemoryMessageRepository';
+import { OutboundPackage } from 'aries-framework-javascript/build/lib/types';
+import { MessageRepository } from 'aries-framework-javascript/build/lib/storage/MessageRepository';
+import { InMemoryMessageRepository } from 'aries-framework-javascript/build/lib/storage/InMemoryMessageRepository';
 
 const indy = require('indy-sdk');
 

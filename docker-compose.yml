@@ -1,0 +1,47 @@
+version: '2.4'
+   
+services:
+     
+  apts:
+    container_name: apts
+    image: apts
+    # The following options are useful when running 'protocoltest' below:
+    #    -v: prints the name of each test as it is run; otherwise, printed more concisely
+    #    -x: stop after the first test failure; otherwise, runs all tests
+    #    --capture=tee-sys: print stdout/stderr to screen for all tests; otherwise, only prints for failed tests
+    command: protocoltest -vx --capture=tee-sys
+    build:
+      context: apts
+    ports: 
+      - "4000:4000"
+    volumes:
+      - type: bind
+        source: ./apts/src/aut.py
+        target: /aries-protocol-test-suite/aut.py
+      - type: bind
+        source: ./apts/src/config.toml
+        target: /aries-protocol-test-suite/config.toml
+      - type: bind
+        source: ./apts/src/test_connection.py
+        target: /aries-protocol-test-suite/protocol_tests/connection/test_connection.py
+      - type: bind
+        source: ./apts/src/test_issue_credential.py
+        target: /aries-protocol-test-suite/protocol_tests/issue_credential/test_issue_credential.py
+      - type: bind
+        source: ./apts/src/__init__.py
+        target: /aries-protocol-test-suite/protocol_tests/__init__.py
+      - type: bind
+        source: ./apts/src/__init__2.py
+        target: /aries-protocol-test-suite/protocol_tests/issue_credential/__init__.py
+      - type: bind
+        source: ./apts/src/conftest.py
+        target: /aries-protocol-test-suite/protocol_tests/conftest.py
+      - type: bind
+        source: ./apts/src/route.py
+        target: /usr/local/lib/python3.6/dist-packages/aries_staticagent/module.py
+      
+        
+networks:
+  default:
+    external:
+      name: von_von
