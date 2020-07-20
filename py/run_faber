@@ -1,11 +1,11 @@
 #!/bin/bash
 
-cd $(dirname $0)
-cd  ../../aries-cloudagent-python/scripts
+cd $(dirname $0)/../../aries-cloudagent-python/scripts
 
 docker build -t aries-cloudagent-run -f ../docker/Dockerfile.run .. || exit 1
 
-docker run --rm -ti --name "aries-cloudagent-runner.faber" --network=von_von -p 8081:80 -p 8001:8001 aries-cloudagent-run start \
+# WARNING there is '--user root' dont use for production. it's only for testing purposes
+docker run --rm -ti --name "aries-cloudagent-runner.faber" --user root -e EVENTS=1 -e TRACE_TARGET=log -e TRACE_TAG=acapy.events --network=von_von -p 8081:80 -p 8001:8001 aries-cloudagent-run start \
  --seed 00000000000000000000000000Agent1 \
  --wallet-key welldone \
  --wallet-name myWallet \
@@ -16,11 +16,11 @@ docker run --rm -ti --name "aries-cloudagent-runner.faber" --network=von_von -p 
  --admin 0.0.0.0 80 \
  --admin-insecure-mode \
  --endpoint http://aries-cloudagent-runner.faber:8001 \
- --log-level DEBUG \
  --invite-label "Faber invitation" \
  --trace-label "Faber trace" \
  -l "Faber" 
 #  \
+#  --log-level DEBUG \
 #  --auto-accept-invites --auto-accept-requests --auto-respond-messages --auto-store-credential
 
 #  --endpoint http://aries_cloudagent_runner_faber:8001 \

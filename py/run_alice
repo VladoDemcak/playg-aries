@@ -1,11 +1,11 @@
 #!/bin/bash
 
-cd $(dirname $0)
-cd  ../../aries-cloudagent-python/scripts
+cd $(dirname $0)/../../aries-cloudagent-python/scripts
 
 docker build -t aries-cloudagent-run -f ../docker/Dockerfile.run .. || exit 1
 
-docker run --rm -ti --name "aries-cloudagent-runner.alice" --network=von_von -p 8082:80 -p 8002:8002 aries-cloudagent-run start \
+# WARNING there is '--user root' dont use for production. it's only for testing purposes
+docker run --rm -ti --name "aries-cloudagent-runner.alice" --user root -e EVENTS=1 --network=von_von -p 8082:80 -p 8002:8002 aries-cloudagent-run start \
  --seed 00000000000000000000000000Agent2 \
  --wallet-key welldone \
  --wallet-name myWallet \
