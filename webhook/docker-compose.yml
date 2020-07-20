@@ -1,0 +1,17 @@
+version: "2.4"
+services:
+  webhook:
+    image: mockserver/mockserver:mockserver-5.11.0
+    ports:
+      - 1080:1080
+    environment:
+      MOCKSERVER_INITIALIZATION_JSON_PATH: /mock.json
+    volumes:
+      - type: bind
+        source: "./mock.json"
+        target: "/mock.json"
+
+networks:
+  default:
+    external:
+      name: von_von

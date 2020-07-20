@@ -5,7 +5,7 @@ cd $(dirname $0)/../../aries-cloudagent-python/scripts
 docker build -t aries-cloudagent-run -f ../docker/Dockerfile.run .. || exit 1
 
 # WARNING there is '--user root' dont use for production. it's only for testing purposes
-docker run --rm -ti --name "aries-cloudagent-runner.faber" --user root -e EVENTS=1 -e TRACE_TARGET=log -e TRACE_TAG=acapy.events --network=von_von -p 8081:80 -p 8001:8001 aries-cloudagent-run start \
+docker run --rm -ti --name "aries-cloudagent-runner.faber" --user root --network=von_von -p 8081:80 -p 8001:8001 aries-cloudagent-run start \
  --seed 00000000000000000000000000Agent1 \
  --wallet-key welldone \
  --wallet-name myWallet \
@@ -17,10 +17,10 @@ docker run --rm -ti --name "aries-cloudagent-runner.faber" --user root -e EVENTS
  --admin-insecure-mode \
  --endpoint http://aries-cloudagent-runner.faber:8001 \
  --invite-label "Faber invitation" \
- --trace-label "Faber trace" \
  -l "Faber" 
-#  \
-#  --log-level DEBUG \
-#  --auto-accept-invites --auto-accept-requests --auto-respond-messages --auto-store-credential
 
-#  --endpoint http://aries_cloudagent_runner_faber:8001 \
+# trace https://github.com/hyperledger/aries-rfcs/tree/master/features/0034-message-tracing
+#  --trace \
+#  --trace-target "http://webhook:1080" \
+#  --trace-label "Faber trace" \
+# known issue --trace-target "message" returns error https://github.com/hyperledger/aries-cloudagent-python/blob/e8e7ee2d199169c7fd7b0ca1ea737cba79a3447c/aries_cloudagent/utils/tracing.py#L206

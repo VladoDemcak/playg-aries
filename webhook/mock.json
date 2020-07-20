@@ -1,0 +1,10 @@
+[
+  {
+    "httpRequest": {
+      "path": "/faef"
+    },
+    "httpResponse": {
+      "body": "some first response"
+    }
+  }
+]
