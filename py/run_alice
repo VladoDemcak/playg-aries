@@ -17,5 +17,7 @@ docker run --rm -ti --name "aries_cloudagent_runner_alice" --network=von_von -p 
  --admin-insecure-mode \
  --log-level DEBUG \
  -l "Alice"
+#   \
+# --auto-accept-invites --auto-accept-requests --auto-respond-messages --auto-respond-credential-proposal --auto-respond-credential-offer --auto-respond-credential-request --auto-respond-presentation-proposal --auto-respond-presentation-request --auto-store-credential
 # --auto-respond-credential-offer
 # --auto-respond-presentation-request

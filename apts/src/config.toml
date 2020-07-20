@@ -1,0 +1,39 @@
+## Aries Protocol Test Suite Configuration ##
+
+[config]
+# HTTP Server options
+host = "apts"
+port = 4000
+
+# Endpoint reported to other agents
+endpoint = "http://apts:4000"
+backchannel = 'aut.AUTBackchannel'
+
+# Use the indy provider
+provider = 'indy_provider.IndyProvider'
+
+# Set the ledger used by APTS.
+# The following config refers to the ledger container in aries-protocol-test-suite/docker-compose.yml.
+ledger_name = 'UDISP'
+ledger_url = 'http://von_webserver_1:8000/genesis'
+ledger_apts_seed = '000000000000000000000000STEWARD1'
+# The following config refers to the Sovrin staging ledger.
+# ledger_name = 'sovrin.staging'
+# ledger_url = 'https://raw.githubusercontent.com/sovrin-foundation/sovrin/master/sovrin/pool_transactions_sandbox_genesis'
+# ledger_apts_seed = '0000000000000000000000000000APTS'
+
+# List of regular expressions used to select tests.
+# If a test name matches at least one regex in this list, it will be selected for execution.
+tests = [
+   "connections.*",
+   "discover-features.*",
+   "issue-credential.*",
+ #  "present-proof.*",
+]
+
+[config.subject]
+# Name and version reported in interop profile
+name = "UDISP Aries agent"
+version = "1.0.0"
+# Endpoint used for backchannel
+endpoint="http://172.26.0.7:8081"
