@@ -153,7 +153,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"tails_public_uri\": \"http://172.19.0.7:8081/revocation/registry/{{agent1.revoc_reg_id}}/tails-file\"\n}",
+							"raw": "{\n  \"tails_public_uri\": \"http://172.26.0.7:8081/revocation/registry/{{agent1.revoc_reg_id}}/tails-file\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -179,15 +179,6 @@
 					"request": {
 						"method": "POST",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"max_cred_num\": 100,\n  \"credential_definition_id\": \"WgWxqztrNooG92RXvxSTWv:3:CL:20:tag\",\n  \"issuance_by_default\": true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "{{issuer.baseUrl}}/revocation/registry/{{agent1.revoc_reg_id}}/publish",
 							"host": [
@@ -670,7 +661,11 @@
 							"script": {
 								"id": "b63138ad-2112-41df-b9e5-46540a703c18",
 								"exec": [
-									""
+									"",
+									"    // \"non_revoked\": {",
+									"    //   \"from\": 1594477318,",
+									"    //   \"to\": 1594477656",
+									"    // }"
 								],
 								"type": "text/javascript"
 							}
@@ -681,7 +676,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"connection_id\": \"{{agent1.connection_id}}\",\n  \"comment\": \"This is a comment about the reason for the proof\",\n  \"proof_request\": {\n    \"name\": \"Proof of Passport\",\n    \"version\": \"1.0\",\n    \"non_revoked\": {\n      \"from\": 1594477318,\n      \"to\": 1594477656\n    },\n    \"requested_attributes\": {\n      \"0_name_uuid\": {\n        \"name\": \"passportNumber\",\n        \"restrictions\": [\n          {\n            \"cred_def_id\": \"JdRkpwWwCBqjfcrsjAH1GT:3:CL:8:PassportCredDef05121999_a\"\n          }\n        ],\n    \"non_revoked\": {\n      \"from\": 1594477318,\n      \"to\": 1594477656\n    }\n      },\n      \"0_date_uuid\": {\n        \"name\": \"expirationDate\",\n        \"restrictions\": [\n          {\n            \"cred_def_id\": \"JdRkpwWwCBqjfcrsjAH1GT:3:CL:8:PassportCredDef05121999_a\"\n          }\n        ],\n    \"non_revoked\": {\n      \"from\": 1594477318,\n      \"to\": 1594477656\n    }\n      }\n    },\n    \"requested_predicates\": {}\n  }\n}",
+							"raw": "{\n  \"connection_id\": \"{{agent1.connection_id}}\",\n  \"comment\": \"This is a comment about the reason for the proof\",\n  \"proof_request\": {\n    \"name\": \"Proof of Passport\",\n    \"version\": \"1.0\",\n    \"requested_attributes\": {\n      \"0_name_uuid\": {\n        \"name\": \"passportNumber\",\n        \"restrictions\": [\n          {\n            \"cred_def_id\": \"JdRkpwWwCBqjfcrsjAH1GT:3:CL:8:PassportCredDef05121999_a\"\n          }\n        ]\n      },\n      \"0_date_uuid\": {\n        \"name\": \"expirationDate\",\n        \"restrictions\": [\n          {\n            \"cred_def_id\": \"JdRkpwWwCBqjfcrsjAH1GT:3:CL:8:PassportCredDef05121999_a\"\n          }\n        ]\n      }\n    },\n    \"requested_predicates\": {}\n  }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
