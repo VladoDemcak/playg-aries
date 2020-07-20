@@ -153,7 +153,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"tails_public_uri\": \"http://172.26.0.7:8081/revocation/registry/{{agent1.revoc_reg_id}}/tails-file\"\n}",
+							"raw": "{\n  \"tails_public_uri\": \"http://aries-cloudagent-runner.faber/revocation/registry/{{agent1.revoc_reg_id}}/tails-file\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -309,7 +309,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{prover.baseUrl}}/connections/{{agent2.connection_id}}/accept-invitation?my_endpoint=http://172.26.0.8:8002",
+							"raw": "{{prover.baseUrl}}/connections/{{agent2.connection_id}}/accept-invitation?my_endpoint=http://aries-cloudagent-runner.alice:8002",
 							"host": [
 								"{{prover.baseUrl}}"
 							],
@@ -321,7 +321,7 @@
 							"query": [
 								{
 									"key": "my_endpoint",
-									"value": "http://172.26.0.8:8002"
+									"value": "http://aries-cloudagent-runner.alice:8002"
 								}
 							]
 						}

@@ -5,7 +5,7 @@ cd  ../../aries-cloudagent-python/scripts
 
 docker build -t aries-cloudagent-run -f ../docker/Dockerfile.run .. || exit 1
 
-docker run --rm -ti --name "aries_cloudagent_runner_alice" --network=von_von -p 8082:8082 -p 8002:8002 aries-cloudagent-run start \
+docker run --rm -ti --name "aries-cloudagent-runner.alice" --network=von_von -p 8082:80 -p 8002:8002 aries-cloudagent-run start \
  --seed 00000000000000000000000000Agent2 \
  --wallet-key welldone \
  --wallet-name myWallet \
@@ -13,7 +13,7 @@ docker run --rm -ti --name "aries_cloudagent_runner_alice" --network=von_von -p 
  --genesis-url http://von_webserver_1:8000/genesis \
  --inbound-transport http 0.0.0.0 8002 \
  --outbound-transport http \
- --admin 0.0.0.0 8082 \
+ --admin 0.0.0.0 80 \
  --admin-insecure-mode \
  --log-level DEBUG \
  -l "Alice"

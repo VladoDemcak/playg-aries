@@ -5,7 +5,7 @@ cd  ../../aries-cloudagent-python/scripts
 
 docker build -t aries-cloudagent-run -f ../docker/Dockerfile.run .. || exit 1
 
-docker run --rm -ti --name "aries_cloudagent_runner_faber" --network=von_von -p 8081:8081 -p 8001:8001 aries-cloudagent-run start \
+docker run --rm -ti --name "aries-cloudagent-runner.faber" --network=von_von -p 8081:80 -p 8001:8001 aries-cloudagent-run start \
  --seed 00000000000000000000000000Agent1 \
  --wallet-key welldone \
  --wallet-name myWallet \
@@ -13,9 +13,9 @@ docker run --rm -ti --name "aries_cloudagent_runner_faber" --network=von_von -p 
  --genesis-url http://von_webserver_1:8000/genesis \
  --inbound-transport http 0.0.0.0 8001 \
  --outbound-transport http \
- --admin 0.0.0.0 8081 \
+ --admin 0.0.0.0 80 \
  --admin-insecure-mode \
- --endpoint http://aries_cloudagent_runner_faber:8001 \
+ --endpoint http://aries-cloudagent-runner.faber:8001 \
  --log-level DEBUG \
  --invite-label "Faber invitation" \
  --trace-label "Faber trace" \
