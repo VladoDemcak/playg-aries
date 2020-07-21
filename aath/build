@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd $(dirname $0)/../../aries-agent-test-harness/
+
+./manage build -a acapy
