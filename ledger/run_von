@@ -4,4 +4,4 @@ cd $(dirname $0)
 cd  ../../von-network
 
 # start von network for UDISP
-./manage start public_ip_address WEB_SERVER_HOST_PORT=8080 "LEDGER_INSTANCE_NAME=UDISP"
+./manage start public_ip_address WEB_SERVER_HOST_PORT=9000 "LEDGER_INSTANCE_NAME=UDISP"
